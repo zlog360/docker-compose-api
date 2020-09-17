@@ -9,3 +9,4 @@ tests/kube.ts
 docker-compose.yaml
 tests/docker/composeexample
 tests/docker/db.sqlite3
+command
