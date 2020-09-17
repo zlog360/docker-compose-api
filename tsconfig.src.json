@@ -1,0 +1,32 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "outDir": "dist",
+    "declaration": false,
+    "removeComments": true,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "sourceMap": true,
+    "pretty": true,
+    "allowUnreachableCode": false,
+    "allowUnusedLabels": false,
+    "noImplicitAny": true,
+    "noImplicitReturns": true,
+    "noImplicitUseStrict": false,
+    "noFallthroughCasesInSwitch": true,
+    "allowJs": true,
+    "allowSyntheticDefaultImports": true
+  },
+  "exclude": [
+    "bin",
+    "dist",
+    "dev",
+    "tests",
+    "node_modules",
+    "typings/index.d.ts",
+    "typings/modules"
+  ],
+  "compileOnSave": false
+}

@@ -1,0 +1,11 @@
+node_modules
+typings
+.vscode
+dev
+manual_typings
+# src
+tests/untested
+tests/kube.ts
+docker-compose.yaml
+tests/docker/composeexample
+tests/docker/db.sqlite3
