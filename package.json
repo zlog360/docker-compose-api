@@ -5,7 +5,7 @@
   "main": "dist/index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ludohenin/node-ts-seed"
+    "url": "https://github.com/zlog360/docker-compose-api"
   },
   "scripts": {
     "build": "rimraf dist && npm run lint && tsc -p ./tsconfig.src.json",
