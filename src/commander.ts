@@ -1,4 +1,4 @@
-// cls && DEBUG=docker-compose:commander ts-mocha -p tsconfig.json tests/commander.spec.ts
+// cls && DEBUG=docker-compose:commander ts-mocha -p tsconfig.json tests/commander.spec.ts --timeout 3000
 import shelljs from "shelljs";
 
 const { Client } = require("ssh2");
@@ -67,6 +67,27 @@ export class Commander extends BaseCommander {
     ls(p?: string): Promise<IResponse> {
         this.shCommand = `/bin/ls ${p || '.'}`;
         return this.exec();
+    }
+    async mkdir(name: string) {
+        this.shCommand = `mkdir -p ${name}`;
+        return this.exec();
+    }
+    async exists(name: string): Promise<IResponse|boolean> {
+        try {
+            if (this.sshConfig) {
+                await this.sftp.connect(this.sshConfig);
+                const res = await this.sftp.exists(name);
+                this.sftp.end();
+                return res;
+            } else {
+                this.shCommand = `[ -d "${name}" ] && echo "true"`;
+                const { stdout } = await this.exec();
+                return stdout.length ? true : false;
+            }
+        }
+        catch(e) {
+            return { stderr: e, code: 0, stdout: '' };
+        }
     }
     async mv(op: string,np: string): Promise<IResponse> {
         this.shCommand = `mv ${op} ${np}`;
