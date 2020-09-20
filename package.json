@@ -1,7 +1,7 @@
 {
   "name": "@zlog360/docker-compose",
   "version": "0.0.0",
-  "description": "Simple seed for your NodeJS projects made with typescript.",
+  "description": " Programatic Api for Nodejs developers to use docker-compose .",
   "main": "dist/index.js",
   "repository": {
     "type": "git",
@@ -44,6 +44,9 @@
   },
   "dependencies": {
     "json-to-pretty-yaml": "^1.2.2",
-    "shelljs": "^0.8.4"
+    "mute-stdout": "^1.0.1",
+    "shelljs": "^0.8.4",
+    "ssh2": "^0.8.9",
+    "ssh2-sftp-client": "^5.3.1"
   }
 }

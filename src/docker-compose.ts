@@ -717,7 +717,7 @@ interface ComposeUp {
     */
     scale?: string; 
 }
-
+// TODO: copy the root dokcer dir first to the localhost or ssh
 export class DockerCompose extends Commander {
     // private formatter: Formatter;
     private _composeFileVersion = "3.3";

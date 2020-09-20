@@ -5,7 +5,10 @@
     "curly": false,
     "eofline": true,
     "indent": true,
-    "max-line-length": [true, 140],
+    "max-line-length": [
+      true, 
+      140
+    ],
     "no-arg": true,
     "no-construct": true,
     "no-duplicate-key": true,
@@ -17,14 +20,20 @@
     "no-unused-variable": true,
     "no-unreachable": true,
     "no-use-before-declare": true,
-    "one-line": [true,
+    "one-line": [
+      true,
       "check-open-brace",
       "check-catch",
       "check-else",
       "check-whitespace"
     ],
-    "quotemark": [true, "single"],
-    "semicolon": [true],
+    "quotemark": [
+      true, 
+      "single"
+    ],
+    "semicolon": [
+      true
+    ],
     "trailing-comma": true,
     "triple-equals": true,
     "variable-name": false
