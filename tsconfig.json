@@ -10,8 +10,9 @@
       "jest",
       "node"
     ],
-    "rootDir": "./src",
     "outDir": "build",
+
+    "declaration": true,
     "sourceMap": true,
     "target": "ES2016",
     "lib": [
