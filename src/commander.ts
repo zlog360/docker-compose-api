@@ -41,7 +41,7 @@ export class Commander extends BaseCommander {
     shell: any = shelljs;
     sshShell: any;
     sftp: any;
-    constructor(private sshConfig?: ISSHConfigs) {
+    constructor(public sshConfig?: ISSHConfigs) {
         super();
         if (this.sshConfig) {
             this.sshShell = new Client();
@@ -126,7 +126,7 @@ export class Commander extends BaseCommander {
                         stream.on('close', (code: number, signal: any) => {
                             logger('Stream :: close :: code: ' + code + ', signal: ' + signal);
                             shell.end();
-                            if (errorData)
+                            if (errorData && !finalData.length)
                                 return rj({ code: code || signal, stdout: '', stderr: errorData })
                             else 
                                 return rs({ code: code || signal, stdout: finalData.join("\n"), stderr: '' })
@@ -136,7 +136,8 @@ export class Commander extends BaseCommander {
                         })
                         .stderr.on('data', (data: any) => {
                             logger('STDERR: ' + data);
-                            errorData = data.toString();
+                            errorData = !data.includes("Building") && !data.includes("Creating") && !data.includes("Starting")
+                            ? data.toString() : undefined;
                         });
                     });
                 })

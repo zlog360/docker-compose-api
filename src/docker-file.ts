@@ -11,26 +11,26 @@ export interface IFrom {
 export interface IHealthCheck {
     interval: string;
     timeout: string;
-    ["start-period"]: string;
+    ['start-period']: string;
     retries: number;
-    CMD: IDockerFile["CMD"];
+    CMD: IDockerFile['CMD'];
 };
 export interface IOnBuild {
-    RUN?: IDockerFile["RUN"];
-    CMD?: IDockerFile["CMD"];
-    LABEL?: IDockerFile["LABEL"];
-    EXPOSE?: IDockerFile["EXPOSE"];
-    ENV?: IDockerFile["ENV"];
-    ADD?: IDockerFile["ADD"];
-    COPY?: IDockerFile["COPY"];
-    ENTRYPOINT?: IDockerFile["ENTRYPOINT"];
-    VOLUME?: IDockerFile["VOLUME"];
-    USER?: IDockerFile["USER"];
-    WORKDIR?: IDockerFile["WORKDIR"];
-    ARG?: IDockerFile["ARG"];
-    STOPSIGNAL?: IDockerFile["STOPSIGNAL"];
-    HEALTHCHECK?: IDockerFile["HEALTHCHECK"];
-    SHELL?: IDockerFile["SHELL"];
+    RUN?: IDockerFile['RUN'];
+    CMD?: IDockerFile['CMD'];
+    LABEL?: IDockerFile['LABEL'];
+    EXPOSE?: IDockerFile['EXPOSE'];
+    ENV?: IDockerFile['ENV'];
+    ADD?: IDockerFile['ADD'];
+    COPY?: IDockerFile['COPY'];
+    ENTRYPOINT?: IDockerFile['ENTRYPOINT'];
+    VOLUME?: IDockerFile['VOLUME'];
+    USER?: IDockerFile['USER'];
+    WORKDIR?: IDockerFile['WORKDIR'];
+    ARG?: IDockerFile['ARG'];
+    STOPSIGNAL?: IDockerFile['STOPSIGNAL'];
+    HEALTHCHECK?: IDockerFile['HEALTHCHECK'];
+    SHELL?: IDockerFile['SHELL'];
 }
 export interface IDockerFile {
     FROM: string|IFrom;
@@ -54,33 +54,33 @@ export interface IDockerFile {
 }
 
 let Commands = {
-    from: "FROM",
-    run: "RUN",
-    cmd: "CMD",
-    label: "LABEL",
-    maintainer: "MAINTAINER",
-    expose: "EXPOSE",
-    env:"ENV",
-    add: "ADD",
-    copy: "COPY",
-    entrypoint: "ENTRYPOINT",
-    volume:"VOLUME",
-    user: "USER",
-    workdir: "WORKDIR",
-    arg: "ARG",
-    onbuild: "ONBUILD",
-    stopsignal:"STOPSIGNAL",
-    healthcheck:"HEALTHCHECK",
-    shell: "SHELL"
+    from: 'FROM',
+    run: 'RUN',
+    cmd: 'CMD',
+    label: 'LABEL',
+    maintainer: 'MAINTAINER',
+    expose: 'EXPOSE',
+    env:'ENV',
+    add: 'ADD',
+    copy: 'COPY',
+    entrypoint: 'ENTRYPOINT',
+    volume:'VOLUME',
+    user: 'USER',
+    workdir: 'WORKDIR',
+    arg: 'ARG',
+    onbuild: 'ONBUILD',
+    stopsignal:'STOPSIGNAL',
+    healthcheck:'HEALTHCHECK',
+    shell: 'SHELL'
 }
 
 class DockerFile {
-    private df: IDockerFile = { FROM: "ubuntu" };
+    private df: IDockerFile = { FROM: 'ubuntu' };
     private keyCounter = 0;
     // order: { timestamp_FROM:[values...] }
     private order: { [key: string]: { key: string, value: string; }; } = {};
     private FROM: string | IFrom;
-    constructor(private fp: string = "tests/docker/test.dockerfile/Dockerfile") {
+    constructor(private fp: string = 'tests/docker/test.dockerfile/Dockerfile') {
     }
     setPath(p: string) {
         this.fp = p;
@@ -92,7 +92,7 @@ class DockerFile {
     clearKeyCounter() {
         this.keyCounter = 0;
     }
-    setFrom(form: IDockerFile["FROM"]): DockerFile {
+    setFrom(form: IDockerFile['FROM']): DockerFile {
         if (isObjectl(form)) {
            form = (form as IFrom);
            this.df.FROM = `${form.platform}:${form.image}:${form.version}`;  
@@ -102,68 +102,68 @@ class DockerFile {
         this.pushValue(Commands.from, this.df.FROM)
         return this;
     }
-    getFrom(): IDockerFile["FROM"] {
+    getFrom(): IDockerFile['FROM'] {
         return this.df.FROM;
     }
     pushOrderedValue(key: string, value: any) {
         const refValue = this.keyCounter++;
         this.order[refValue] = { key, value };
     }
-    setRun(r: IDockerFile["RUN"]): DockerFile {
-        this.pushValue("RUN", r);
+    setRun(r: IDockerFile['RUN']): DockerFile {
+        this.pushValue('RUN', r);
         return this;
     }
-    getRun(): IDockerFile["RUN"] {
+    getRun(): IDockerFile['RUN'] {
         return this.df.RUN;
     }
-    setCpy(c: IDockerFile["COPY"]) {
-        this.pushValue("COPY", c);
+    setCpy(c: IDockerFile['COPY']) {
+        this.pushValue('COPY', c);
         return this;
     }
-    getCpy(): IDockerFile["COPY"] {
+    getCpy(): IDockerFile['COPY'] {
         return this.df.COPY;
     }
-    setAdd(a: IDockerFile["ADD"]) {
-        this.pushValue("ADD", a);
+    setAdd(a: IDockerFile['ADD']) {
+        this.pushValue('ADD', a);
         return this;
     }
     getAdd() {
         return this.df.ADD;
     }
-    setEnv(e: IDockerFile["ENV"]) {
-        this.pushValue("ENV", e);
+    setEnv(e: IDockerFile['ENV']) {
+        this.pushValue('ENV', e);
         return this;
     }
     getEnv() {
         return this.df.ENV;
     }
-    setWorkdir(w: IDockerFile["WORKDIR"]) {
-        this.pushValue("WORKDIR", w);
+    setWorkdir(w: IDockerFile['WORKDIR']) {
+        this.pushValue('WORKDIR', w);
         return this;
     }
     getWorkdir() {}
-    setExpose(e: IDockerFile["EXPOSE"]) {
-        this.pushValue("EXPOSE", e);
+    setExpose(e: IDockerFile['EXPOSE']) {
+        this.pushValue('EXPOSE', e);
         return this;
     }
     getExpose() {
         return this.df.EXPOSE;
     }
-    setLabel(l: IDockerFile["LABEL"]) {
-        this.pushValue("LABEL", l);
+    setLabel(l: IDockerFile['LABEL']) {
+        this.pushValue('LABEL', l);
         return this;
     }
     getLabel() {
         return this.df.LABEL;
     }
-    setStopSignal(ss: IDockerFile["STOPSIGNAL"]) {
+    setStopSignal(ss: IDockerFile['STOPSIGNAL']) {
         this.df.STOPSIGNAL = ss;
         return this;
     }
     getStopSignal() {
         return this.df.STOPSIGNAL;
     }
-    setHealthCheck(hc: IDockerFile["HEALTHCHECK"]) {
+    setHealthCheck(hc: IDockerFile['HEALTHCHECK']) {
         if (isString(hc)) {
             this.df.HEALTHCHECK = hc;
             return this;
@@ -182,7 +182,7 @@ class DockerFile {
         cmd += '\\'
         if (CMD) {
            cmd += isArrayl(CMD) 
-           ? ` CMD ${(CMD as string[]).join(" ")}` 
+           ? ` CMD ${(CMD as string[]).join(' ')}` 
            : ` CMD ${CMD}`; 
         }
         this.df.HEALTHCHECK = cmd;
@@ -191,27 +191,27 @@ class DockerFile {
     getHealthCheck() {
         return this.df.HEALTHCHECK;
     }
-    setUser(user: IDockerFile["USER"]) {
+    setUser(user: IDockerFile['USER']) {
       this.df.USER = user;
       return this;
     }
     getUser() {
         return this.df.USER;
     }
-    setVolume(vol: IDockerFile["VOLUME"]) {
-        this.pushValue("VOLUME", vol);
+    setVolume(vol: IDockerFile['VOLUME']) {
+        this.pushValue('VOLUME', vol);
         return this;
     }
     getVolume() {
         return this.df.VOLUME;
     }
-    setOnBuild(onb: IDockerFile["ONBUILD"]) {
+    setOnBuild(onb: IDockerFile['ONBUILD']) {
         const keys = Object.keys(onb) || [];
         const fd: string[] = (keys as string[])
         .map((inst: string) => {
           let data = (onb as any)[inst];  
           if (isArrayl(data)) {
-             return data.map((itr: string) => `${inst} ${itr}`).join("\n"); 
+             return data.map((itr: string) => `${inst} ${itr}`).join('\n'); 
           } else {
             return `${inst} ${data}`;
           }
@@ -222,13 +222,13 @@ class DockerFile {
     getOnBuild() {
         return this.df.ONBUILD;
     }
-    setCmd(cmd: IDockerFile["CMD"]) {
+    setCmd(cmd: IDockerFile['CMD']) {
         if (isArrayl(cmd)) {
-            cmd = (cmd as string[]).join(" && ")
+            cmd = (cmd as string[]).join(' && ')
         } else {
             cmd  = cmd;
         }
-        this.pushValue("CMD", cmd);
+        this.pushValue('CMD', cmd);
         return this;
     }
     getCmd() {
@@ -258,7 +258,7 @@ class DockerFile {
        );
        return new Promise(
            (rs: any, rj: any) => 
-            writeFile(this.fp, data.join("\n"), (e) => {
+            writeFile(this.fp, data.join('\n'), (e) => {
                 if (!e) {
                     this.order = {};
                 }

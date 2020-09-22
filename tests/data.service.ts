@@ -632,6 +632,34 @@ export const buildResponse = [
     ''
   ];
 
+  export const RemoteBuildBAsic = [
+    'Step 1/8 : FROM python:3',
+    ' ---> 28a4c88cdbbf',
+    'Step 2/8 : ENV PYTHONUNBUFFERED 1',
+    ' ---> Using cache',
+    ' ---> 86778f65af83',
+    'Step 3/8 : RUN mkdir /code',
+    ' ---> Using cache',
+    ' ---> fc2ff08181fe',
+    'Step 4/8 : WORKDIR /code',
+    ' ---> Using cache',
+    ' ---> 6293fc8a2cc8',
+    'Step 5/8 : COPY requirements.txt /code/',
+    ' ---> Using cache',
+    ' ---> 2b80cebc435a',
+    'Step 6/8 : RUN pip install -r requirements.txt',
+    ' ---> Using cache',
+    ' ---> ef58b82ef0b7',
+    'Step 7/8 : COPY . /code/',
+    ' ---> Using cache',
+    ' ---> 6adcce7649f7',
+    'Step 8/8 : RUN python manage.py migrate',
+    ' ---> Using cache',
+    ' ---> 20b8a9e94415',
+    'Successfully built 20b8a9e94415',
+    'Successfully tagged dockeruser_web:latest'
+  ]
+
   export const LSLocalPath: string[] = [
     'agents.json',
     'Android',

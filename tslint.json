@@ -32,7 +32,7 @@
       "single"
     ],
     "semicolon": [
-      true
+      false
     ],
     "trailing-comma": true,
     "triple-equals": true,

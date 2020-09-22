@@ -1,6 +1,6 @@
 import { writeFile } from "fs";
 import { getPackageVersion, Formatter} from './my-lib';
-import { Commander } from './commander';
+import { Commander, ISSHConfigs } from './commander';
 import { config } from 'process';
 import { isArray, isString } from 'util';
 import { setMatchers } from 'expect/build/jestMatchersObject';
@@ -13,19 +13,19 @@ import { BUILD_FLAGS, CONFIG_FLAGS, CREATE_FLAGS, Dictionory } from "./docker-di
 const YAML = require('json-to-pretty-yaml')
 const logger = require("debug")("zlog360:docker-compose");
 
-type SMUnitString = string|string[]
-type SMUnitConfig = IComposeGeneric|IConfig|IConfig[]
-type Config = SMUnitString | SMUnitConfig;
-type Cmd = string|string[]
-type Build = string|IDockerComposeBuild;
-type Environment = IComposeGeneric|string[]; 
-type Label = IComposeGeneric|string[];
-type Network = IComposeGeneric|string[];
-type Secret = string|IComposeGeneric|string[];
-type Systctls = IComposeGeneric|string[];
-type TmpFs = SMUnitString|ITmpFsConfig|ITmpFsConfig[];
-type Volume = string[]|IVolumeConfig|IVolumeConfig[]
-type Port = string[]|(string|IPortConfig)[]
+export type SMUnitString = string|string[]
+export type SMUnitConfig = IComposeGeneric|IConfig|IConfig[]
+export type Config = SMUnitString | SMUnitConfig;
+export type Cmd = string|string[]
+export type Build = string|IDockerComposeBuild;
+export type Environment = IComposeGeneric|string[]; 
+export type Label = IComposeGeneric|string[];
+export type Network = IComposeGeneric|string[];
+export type Secret = string|IComposeGeneric|string[];
+export type Systctls = IComposeGeneric|string[];
+export type TmpFs = SMUnitString|ITmpFsConfig|ITmpFsConfig[];
+export type Volume = string[]|IVolumeConfig|IVolumeConfig[]
+export type Port = string[]|(string|IPortConfig)[]
 
 
 interface IPortConfig {
@@ -82,7 +82,7 @@ interface IServiceUlimits {
         hard?: number;
     }
 }
-interface IDockerComposeConfig {
+export interface IDockerComposeConfig {
     format?: string;
 } 
 
@@ -273,6 +273,7 @@ interface BuildConfig {
 
 
 export interface ISetOpts {
+    // build service with service or not
    build?: { service?: string, data: Build };
    configs?: { service?: string, data: Config };
    cap_add?: { service?: string, data: SMUnitString, append: boolean };
@@ -770,10 +771,11 @@ export class DockerCompose extends Commander {
 
     constructor(
         private config: IDockerComposeConfig, 
-        services: SMUnitString, 
+        services: SMUnitString = [], 
         pack?: IDockerComposePack, 
-        private rootP: string = `${process.cwd()}/tests/docker`) {
-        super();
+        private rootP: string = `${process.cwd()}/tests/docker`,
+        private remoteConfig?: ISSHConfigs) {
+        super(remoteConfig);
         this.setService(services);
         this.DockerFile = new DockerFile();
     }
@@ -977,7 +979,7 @@ export class DockerCompose extends Commander {
         this._services.clear();
         return this;
     }
-    async toFile(path: string = "docker-compose.yaml") {
+    async toFile(path: string = "docker-compose.yaml", remotePath: string = "docker-compose.yaml") {
         const version = this._version;
         const services: any = {  };
         const skeys = Array.from(this._services.keys());
@@ -990,7 +992,17 @@ export class DockerCompose extends Commander {
             writeFile(
                 path, 
                 filedata,
-                (e: any) => e ? rj(e) : rs(true)
+                async (e: any) => {
+                    if (e)
+                      rj(e)
+                    else  
+                      rs(true)    
+                    if (remotePath && this.sshConfig) {
+                        await this.sftp.connect(this.sshConfig)
+                        this.sftp.fastPut(path, remotePath);
+                        this.sftp.end();
+                    }  
+                }
             );
         });
     }
@@ -1499,14 +1511,18 @@ export class DockerCompose extends Commander {
         return this.execRes(); 
     }
     async execRes() {
-        const data = await this.exec();
-        
-        const res = data.stdout.length > 1 
-        ? data.stdout.split("\n").filter((i: string) => i.length > 1)
-        : data.stderr;
+        try {
+            const data = await this.exec();
+            
+            const res = data.stdout.length > 1 
+            ? data.stdout.split("\n").filter((i: string) => i.length > 1)
+            : data.stderr;
 
-        this.clearCmd();
-        return res;
+            this.clearCmd();
+            return res;
+        } catch (e) {
+            return e;
+        }
     }
     // setDriver(service: string, driver: string) {
     //     this.setServiceWithConfig(service, { driver });     
