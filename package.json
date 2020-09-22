@@ -1,6 +1,6 @@
 {
   "name": "@zlog360/docker-compose",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": " Programatic Api for Nodejs developers to use docker-compose .",
   "main": "dist/index.js",
   "repository": {
