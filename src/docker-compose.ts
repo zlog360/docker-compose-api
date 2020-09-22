@@ -6,7 +6,7 @@ import { isArray, isString } from 'util';
 import { setMatchers } from 'expect/build/jestMatchersObject';
 import { ConcatSMUnitString, StrArrtoObj, ConcatObject, isArrayl } from './util';
 import { serviceBuild, ConfigsShort } from '../tests/data.service';
-import { version } from '../docker-compose/src/index';
+// import { version } from '../src/my-lib';
 import DockerFile from './docker-file';
 import { BUILD_FLAGS, CONFIG_FLAGS, CREATE_FLAGS, Dictionory } from "./docker-dictionory";
 

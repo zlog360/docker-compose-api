@@ -2,7 +2,6 @@ import { writeFile } from 'fs';
 // ts-mocha -p tsconfig.json tests/docker-file.spec.ts
 import { isObjectl, isArrayl } from './util';
 import { isString } from 'util';
-import { time } from 'console';
 export interface IFrom {
    platform?: string;
    image?: string;
@@ -102,7 +101,7 @@ class DockerFile {
         this.pushValue(Commands.from, this.df.FROM)
         return this;
     }
-    getFrom(): IDockerFile['FROM'] {
+    getFrom(): IDockerFile['FROM'] { 
         return this.df.FROM;
     }
     pushOrderedValue(key: string, value: any) {

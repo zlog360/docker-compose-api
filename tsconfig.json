@@ -10,8 +10,10 @@
       "jest",
       "node"
     ],
+    "rootDir": "./src",
+    "outDir": "build",
     "sourceMap": true,
-    "target": "es6",
+    "target": "ES2016",
     "lib": [
       "es2019"
     ],

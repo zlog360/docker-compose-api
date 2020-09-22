@@ -9,6 +9,6 @@ export function getPackageVersion() {
   return pkg.version || 'no version';
 }
 
-export * from "./stdio-formatter";
-export * from "./docker-compose";
-export * from "./commander";
+export * from './stdio-formatter';
+export * from './docker-compose';
+export * from './commander';

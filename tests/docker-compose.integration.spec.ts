@@ -1,22 +1,38 @@
 // DEBUG=zlog360:* ts-mocha -p tsconfig.json tests/docker-compose.integration.spec.ts --timeout 100000
 import expect from 'expect';
 import {  DockerCompose, ISetOpts } from '../src/my-lib';
-import { SDATA, Services_List, S4_Service, serviceBuild, ConfigsShort, ConfigsLong, CapAddStr, CapAddArr, CapDropStr, CapDropArr, CgroupParent, ContainerName, DependsOnArr, DependsOnStr, Deploy, DeviceStr, DeviceArr, DnsStr, DnsArr, DnsSearchStr, DnsSearchArr, EntryPointStr, EntryPointArr, EnvFileStr, EnvFileArr, EnvironmentObj, EnvironmentArray, Expose, ExposeStr, ExposeArr, ExternalLinksStr, ExternalLinksArr, ExtraHostsArr, ExtraHostsStr, HealthCheck, Image, labelsObj, labelsArr, linksStr, linksArr, Logging, NetworkMode, Networks, NetworksObj, PID, PortStr, PortsArr, restart, SecretStr, SecretStrArr, SecretObj, SecretObjArr, SecOptStr, SecOptsStrArr, StopSignal, StopGracePeriod, SystCallsObj, SystCallArray, TempFsStr, TepmFsArrofStr, TempFsArroObj, TempFsObj, Ulimits, UserNsMode, VolumesStr, VolumesArr, VolumesObj, VolumesArroObj, CommandStr, CommandArr, isolation, buildResponse, buildResponse5, ServiceAndConfig, swithcRes, ConfigOpts, ConfigRes7, cwithservice, cwithoutservice, CreateSuccess, ConfigRes8, Config11, DownConfig, EventConfig, ExecConfigs, ImagesConfig, KillConfig, LogsConfig, PauseConfig, PortConfig, PsConfig, PullConfig, PushConfig, RestartConfig, RmConfig, RunConfig, ScaleConfig, StartConfig, StopConfig, TopConfig, UnPauseConfig, UpConfig } from './data.service';
+import {
+    Services_List, serviceBuild,
+    ConfigsShort, CapAddStr, CapDropArr,
+    CgroupParent, ContainerName,
+    DependsOnStr, Deploy, DeviceStr,
+    DnsArr, DnsSearchArr, EntryPointArr,
+    EnvFileArr, ExposeArr, ExternalLinksArr,
+    ExtraHostsArr, ExtraHostsStr, HealthCheck,
+    Image, labelsObj, labelsArr, linksStr,
+    linksArr, Logging, NetworkMode, Networks,
+    PortStr, PortsArr, restart, SecretStr,
+    SecOptsStrArr, StopSignal, StopGracePeriod,
+    SystCallArray, TempFsArroObj, Ulimits,
+    UserNsMode, VolumesArr, CommandArr,
+    isolation, PauseConfig, RmConfig,
+    StartConfig, StopConfig, UpConfig
+} from './data.service';
 import { StrArrtoObj } from '../src/util';
-import { doesNotMatch } from 'assert';
+// import { doesNotMatch } from 'assert';
 
 describe('docker-compose api unit tests', () => {
   const initlist = Services_List;
   const dc = new DockerCompose({}, initlist);
     it('#1 Integration tests with set', () => {
-        const srvc = "s12";
-        const conf: ISetOpts = { 
-            build: { data: serviceBuild },  
+        const srvc = 's12';
+        const conf: ISetOpts = {
+            build: { data: serviceBuild },
             configs: {data: ConfigsShort},
             cgroup_parent: { data: CgroupParent },
             cap_add: { data: CapAddStr, append: true },
             cap_drop: { data: CapDropArr, append: true },
-            container_name: { data: "my_container" }   
+            container_name: { data: 'my_container' }
          };
         dc.set(srvc, conf);
         expect(dc.getBuild(srvc)).toMatchObject(serviceBuild);
@@ -27,7 +43,7 @@ describe('docker-compose api unit tests', () => {
         expect(dc.getContainerName(srvc)).toBe(conf.container_name.data);
     });
     it('#2 Integration tests with chaining', () => {
-        const srvc = "s13";
+        const srvc = 's13';
         dc
         .setCurrentService(srvc)
         .setBuild({ data: serviceBuild })
@@ -57,7 +73,7 @@ describe('docker-compose api unit tests', () => {
         .setLinks({ data: linksStr, append: true })
         .setNetworkMode({ data: NetworkMode })
         .setNetwork({ data: Networks })
-        .setPid({ data: "123" })
+        .setPid({ data: '123' })
         .setPort({ data: [PortStr], append: true })
         .setRestart({ data: restart[0] })
         .setPort({ data: PortsArr, append: true })
@@ -91,7 +107,7 @@ describe('docker-compose api unit tests', () => {
         expect(dc.getSecret(srvc)).toBe(SecretStr);
         expect(dc.getPort(srvc)).toMatchObject([PortStr,...PortsArr]);
         expect(dc.getRestart(srvc)).toBe(restart[0]);
-        expect(dc.getPid(srvc)).toBe("123");
+        expect(dc.getPid(srvc)).toBe('123');
         expect(dc.getNetwork(srvc)).toBe(Networks);
         expect(dc.getNetworkMode(srvc)).toBe(NetworkMode);
         expect(dc.getLinks(srvc)).toMatchObject([...linksArr]);
@@ -115,75 +131,73 @@ describe('docker-compose api unit tests', () => {
         expect(dc.getConfig(srvc)).toBe(ConfigsShort);
         expect(dc.getIsolation(srvc)).toBe(isolation[0]);
     });
-    it("#3 Integration tests with setters to build, create, and remove", async () => {
+    it('#3 Integration tests with setters to build, create, and remove', async () => {
         dc.
         DockerFile
-        .setPath("tests/docker/zlog-compose/Dockerfile")
-        .setFrom("python:3")
-        .setEnv("PYTHONUNBUFFERED 1")
-        .setRun("mkdir /code")
-        .setWorkdir("/code")
-        .setCpy("requirements.txt /code/")
-        .setRun("pip install -r requirements.txt")
-        .setCpy(". /code/")
-        .setRun("python manage.py migrate")
+        .setPath('tests/docker/zlog-compose/Dockerfile')
+        .setFrom('python:3')
+        .setEnv('PYTHONUNBUFFERED 1')
+        .setRun('mkdir /code')
+        .setWorkdir('/code')
+        .setCpy('requirements.txt /code/')
+        .setRun('pip install -r requirements.txt')
+        .setCpy('. /code/')
+        .setRun('python manage.py migrate')
         .toFile()
         dc
         .clear()
-        .setRootDir("tests/docker/zlog-compose")
-        .setCurrentService("web")
-        .setBuild({ data: "." })
-        .setCommand({data: "python manage.py runserver 0.0.0.0:8004"})
-        .setVolume({ data: [".:/code"], append: true })
-        .setPort({ data: ["8004:8000"], append: true })
-        .setDependsOn({ data: ["db"], append: true })
-        .setCurrentService("traefik")
-        .setImage({ data: "traefik" })
-        .setCurrentService("cadvisor")
-        .setImage({data: "google/cadvisor"})
-        .setCurrentService("db")
-        .setImage({data: "postgres"})
+        .setRootDir('tests/docker/zlog-compose')
+        .setCurrentService('web')
+        .setBuild({ data: '.' })
+        .setCommand({data: 'python manage.py runserver 0.0.0.0:8004'})
+        .setVolume({ data: ['.:/code'], append: true })
+        .setPort({ data: ['8004:8000'], append: true })
+        .setDependsOn({ data: ['db'], append: true })
+        .setCurrentService('traefik')
+        .setImage({ data: 'traefik' })
+        .setCurrentService('cadvisor')
+        .setImage({data: 'google/cadvisor'})
+        .setCurrentService('db')
+        .setImage({data: 'postgres'})
         .setEnvironment({data: [
-            "POSTGRES_DB=postgres",
-            "POSTGRES_USER=postgres",
-            "POSTGRES_PASSWORD=postgres"
+            'POSTGRES_DB=postgres',
+            'POSTGRES_USER=postgres',
+            'POSTGRES_PASSWORD=postgres'
         ]});
-        const toFile = await dc.toFile("tests/docker/zlog-compose/docker-compose.yaml");
+        const toFile = await dc.toFile('tests/docker/zlog-compose/docker-compose.yaml');
         expect(toFile).toBeTruthy();
         const build = await dc.composeBuild();
-        expect(build.join("\n").includes("Successfully built")).toBeTruthy();
+        expect(build.join('\n').includes('Successfully built')).toBeTruthy();
         const create = await dc.composeCreate();
-        // const start = await dc.composeStart({ service: "db" });
-        // const stop = await dc.composeStart({ service: "db" });
+        // const start = await dc.composeStart({ service: 'db' });
+        // const stop = await dc.composeStart({ service: 'db' });
         // const rm = await dc.composeRm();
-        console.log("create ------> ", create)
+        console.log('create ------> ', create)
     })
     it('#4 Integration tests with toFile with simple set', async () => {
-        const srvc = "s12";
-        const conf: ISetOpts = { 
-            build: { data: serviceBuild },  
+        const srvc = 's12';
+        const conf: ISetOpts = {
+            build: { data: serviceBuild },
             configs: {data: ConfigsShort},
             cgroup_parent: { data: CgroupParent },
             cap_add: { data: CapAddStr, append: true },
             cap_drop: { data: CapDropArr, append: true },
-            container_name: { data: "my_container" }   
+            container_name: { data: 'my_container' }
          };
         dc.set(srvc, conf);
         const rsponse = await dc.toFile();
-        expect(rsponse).toBeTruthy();        
+        expect(rsponse).toBeTruthy();
     });
     // create, start, stop, remove
-    it("#5 check docker-compose flow", async () => {
+    it('#5 check docker-compose flow', async () => {
         const df1 = await dc.composeCreate();
-        const df2 = await dc.composeStart(StartConfig);
-        const df3 = await dc.composeStop(StopConfig);
-        const df4 = await dc.composeStart(StartConfig);
-        const df5 = await dc.composePause(PauseConfig);
+        await dc.composeStart(StartConfig);
+        await dc.composeStop(StopConfig);
+        await dc.composeStart(StartConfig);
+        await dc.composePause(PauseConfig);
         const df6 = await dc.composeRm(RmConfig);
-        const df7 = await dc.composeUp(UpConfig);
+        await dc.composeUp(UpConfig);
         expect(df1.length > 0).toBeTruthy();
         expect(df6).toMatchObject([ 'Going to remove zlog-compose_web_1' ]);
     })
-    
-    
 });

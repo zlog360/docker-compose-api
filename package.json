@@ -8,7 +8,7 @@
     "url": "https://github.com/zlog360/docker-compose-api"
   },
   "scripts": {
-    "build": "rimraf dist && npm run lint && tsc -p ./tsconfig.src.json",
+    "build": "rimraf dist && tsc -p ./tsconfig.src.json",
     "lint": "tslint **/*.ts",
     "test": "ts-mocha -p tsconfig.json tests/*.ts",
     "tsc": "tsc",

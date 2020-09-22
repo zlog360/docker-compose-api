@@ -1,0 +1,21 @@
+version: "3.3"
+services:
+  web:
+    build: "."
+    command: "python manage.py runserver 0.0.0.0:8004"
+    volumes:
+      - ".:/code"
+    ports:
+      - "8004:8000"
+    depends_on:
+      - "db"
+  traefik:
+    image: "traefik"
+  cadvisor:
+    image: "google/cadvisor"
+  db:
+    image: "postgres"
+    environment:
+      - "POSTGRES_DB=postgres"
+      - "POSTGRES_USER=postgres"
+      - "POSTGRES_PASSWORD=postgres"
