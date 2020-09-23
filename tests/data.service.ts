@@ -17,7 +17,7 @@ export const S4_Service = {
 
 export const serviceBuild = {
     context: './dir',
-    dockerfile: 'Dockerfile-alternate',
+    dockerfile: 'Dockerfile',
     args:{
         buildno: 1
     }
@@ -750,4 +750,29 @@ export const buildResponse = [
     'work_space',
     'zeppelin',
     ''
+  ]
+export const nodejsAppBuildData = [
+    'Step 1/7 : FROM node:12',
+    ' ---> 28faf336034d',
+    'Step 2/7 : WORKDIR /usr/src/app',
+    ' ---> Using cache',
+    ' ---> ef6eb162ad81',
+    'Step 3/7 : COPY package*.json ./',
+    ' ---> Using cache',
+    ' ---> ebb9387bab7d',
+    'Step 4/7 : RUN npm install',
+    ' ---> Using cache',
+    ' ---> 898477ba48aa',
+    'Step 5/7 : COPY . .',
+    ' ---> Using cache',
+    ' ---> ee4649b62dd4',
+    'Step 6/7 : EXPOSE 3002',
+    ' ---> Using cache',
+    ' ---> 024b35bde0a9',
+    'Step 7/7 : CMD node && server.js',
+    ' ---> Using cache',
+    ' ---> a1bab2690307',
+    '[Warning] One or more build-args [buildno] were not consumed',
+    'Successfully built a1bab2690307',
+    'Successfully tagged nodejs_docker_web_nodejs_docker_web:latest'
   ]

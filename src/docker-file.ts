@@ -32,6 +32,7 @@ export interface IOnBuild {
     SHELL?: IDockerFile['SHELL'];
 }
 export interface IDockerFile {
+    PATH?: string;
     FROM: string|IFrom;
     RUN?: string|string[];
     CMD?: string|string[];
@@ -73,12 +74,32 @@ let Commands = {
     shell: 'SHELL'
 }
 
-class DockerFile {
+class  DockerFile {
     private df: IDockerFile = { FROM: 'ubuntu' };
     private keyCounter = 0;
     // order: { timestamp_FROM:[values...] }
     private order: { [key: string]: { key: string, value: string; }; } = {};
-    private FROM: string | IFrom;
+    // aliases:
+    private FROM = this.setFrom;
+    private RUN = this.setRun;
+    private CMD = this.setCmd;
+    private LABEL = this.setLabel;
+    private MAINTAINER = this.setMaintainer;
+    private EXPOSE = this.setExpose;
+    private ENV = this.setEnv;
+    private ADD = this.setAdd;
+    private COPY = this.setCpy;
+    private ENTRYPOINT = this.setEntrpoint;
+    private VOLUME = this.setVolume;
+    private USER = this.setUser;
+    private WORKDIR = this.setWorkdir;
+    // private ARG = this.setAr
+    private ONBUILD = this.setOnBuild;    
+    private STOPSIGNAL = this.setStopSignal;
+    private HEALTHCHECK = this.setHealthCheck;
+    private PATH = this.setPath;
+    // private SHELL = this
+
     constructor(private fp: string = 'tests/docker/test.dockerfile/Dockerfile') {
     }
     setPath(p: string) {
@@ -154,6 +175,20 @@ class DockerFile {
     }
     getLabel() {
         return this.df.LABEL;
+    }
+    setEntrpoint(e: IDockerFile['ENTRYPOINT']) {
+        this.pushValue('ENTRYPOINT', e);
+        return this;
+    }
+    getEntrypoint() {
+        return this.df.ENTRYPOINT;
+    }
+    setMaintainer(m: IDockerFile['MAINTAINER']) {
+        this.pushValue('MAINTAINER', m);
+        return this;
+    }
+    getMaintainer() {
+        return this.df.MAINTAINER;
     }
     setStopSignal(ss: IDockerFile['STOPSIGNAL']) {
         this.df.STOPSIGNAL = ss;
@@ -248,6 +283,14 @@ class DockerFile {
         } 
         (this.df as any)[key] = target || v;
         this.pushOrderedValue(key, v);
+        return this;
+    }
+    set(opts: IDockerFile) {
+        const props = Object.keys(opts);
+        props.forEach((p: string) => {
+            let key = p.includes("_") ? p.split("_").slice(0, 1).join("") : p;
+            (this as any)[key]((opts as any)[p]);
+        })
         return this;
     }
     toFile() {

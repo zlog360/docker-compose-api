@@ -9,6 +9,7 @@ import { serviceBuild, ConfigsShort } from '../tests/data.service';
 // import { version } from '../src/my-lib';
 import DockerFile from './docker-file';
 import { BUILD_FLAGS, CONFIG_FLAGS, CREATE_FLAGS, Dictionory } from "./docker-dictionory";
+import { IDockerFile } from './docker-file';
 
 const YAML = require('json-to-pretty-yaml')
 const logger = require("debug")("zlog360:docker-compose");
@@ -626,7 +627,7 @@ interface ComposeScale {
 }
 
 interface ComposeStart {
-
+   service: string;
 }
 
 interface ComposeStop {
@@ -939,7 +940,7 @@ export class DockerCompose extends Commander {
      * @description  Start services
      * @param opts {ComposeStart}
      */
-    async composeStart(opts: ComposeStart) {
+    async composeStart(opts?: ComposeStart) {
         const target = 'start';
         return this.runCompose(target, opts);
     }    
@@ -947,7 +948,7 @@ export class DockerCompose extends Commander {
      * @description  Stop services
      * @param opts {ComposeStop}
      */
-    async composeStop(opts: ComposeStop) {
+    async composeStop(opts?: ComposeStop) {
         const target = 'stop';
         return this.runCompose(target, opts);
     }       
@@ -972,6 +973,8 @@ export class DockerCompose extends Commander {
      * @param opts {ComposeUp}
      */
     async composeUp(opts?: ComposeUp) {
+        const args = {  build: true, d: true }
+        opts = { ...opts, ...args };
         const target = 'up';
         return this.runCompose(target, opts);
     }
@@ -987,21 +990,21 @@ export class DockerCompose extends Commander {
         skeys.forEach(fun);
         const data = { version, services };
         const filedata = YAML.stringify(data);
-        
         return new Promise((rs: any, rj: any) => {
             writeFile(
-                path, 
+                `${path}/docker-compose.yaml`, 
                 filedata,
                 async (e: any) => {
                     if (e)
                       rj(e)
                     else  
                       rs(true)    
-                    if (remotePath && this.sshConfig) {
-                        await this.sftp.connect(this.sshConfig)
-                        this.sftp.fastPut(path, remotePath);
-                        this.sftp.end();
-                    }  
+                    // if (remotePath && this.sshConfig) {
+                    //     await this.sftp.connect(this.sshConfig)
+                    //     console.log(remotePath);
+                    //     // this.sftp.fastPut(path, remotePath);
+                    //     this.sftp.end();
+                    // }  
                 }
             );
         });
@@ -1018,6 +1021,7 @@ export class DockerCompose extends Commander {
        const funcs = Object.keys(opts);
        this.setCurrentService(service);
        funcs.forEach(fun => (this as any)[fun]((opts as any)[fun]));
+       return this;
     }
     get(service: string) {
         return this.getService(service);
@@ -1502,12 +1506,11 @@ export class DockerCompose extends Commander {
     execActionCommand(action: string, opts?: any, flags?: any) {
         this.clearCmd();
         this.baseCommand(action);
-
+        
         if(opts) {
             this.shCommand = `${this.shCommand} ${this.parseCommand(flags, opts)}`;
         }
         logger("commad: ",this.shCommand);
-        
         return this.execRes(); 
     }
     async execRes() {
@@ -1523,6 +1526,27 @@ export class DockerCompose extends Commander {
         } catch (e) {
             return e;
         }
+    }
+    async Deploy(df: IDockerFile, stack: {[key: string]: ISetOpts}, path: { local: string, remote: string }) {
+        try {
+            this.DockerFile.set(df).toFile();
+            const services = Object.keys(stack);
+            services.forEach(s => this.set(s, stack[s]));
+            this.toFile(path.local, path.remote);
+            await this.cp(path.local, path.remote);
+            return this.composeUp();
+        } catch(e) {
+            return e;
+        }
+    }
+    async UnDeploy() {
+         try {
+            // await this.composeStop();
+            // return this.composeRm({f: true});
+            return this.composeDown();
+         } catch(e) {
+             return e;
+         }
     }
     // setDriver(service: string, driver: string) {
     //     this.setServiceWithConfig(service, { driver });     
