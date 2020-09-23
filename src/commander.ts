@@ -38,6 +38,7 @@ const logger = require("debug")("docker-compose:commander");
 // TODO: 3) list, remove from remote or target host
 export class Commander extends BaseCommander {
     shCmd: string = '';
+    rp: string = '';
     shell: any = shelljs;
     sshShell: any;
     sftp: any;
@@ -59,6 +60,12 @@ export class Commander extends BaseCommander {
     }
     get shCommand(): string {
        return this.shCmd; 
+    }
+    set remotePath(rp: string) {
+        this.rp = rp;
+    }
+    get remotePath(): string {
+        return this.rp;
     }
     clearCmd(): void {
         this.shCommand = '';
@@ -99,7 +106,11 @@ export class Commander extends BaseCommander {
                 this.shCommand = `cp -r ${op} ${np}`;
                 return this.exec();
             } else {
-                await this.sftp.connect(this.sshConfig)
+                const exists = await this.exists(np);
+                if (!exists) {
+                    await this.mkdir(np);
+                }
+                await this.sftp.connect(this.sshConfig);
                 const res = await this.sftp.uploadDir(op,np)
                 this.sftp.end();
                 return { stdout: res, code: 0, stderr: '' };
@@ -112,9 +123,9 @@ export class Commander extends BaseCommander {
         this.shCommand = `rm -r ${p}`;
         return this.exec();
     }
-    exec(command: string = this.shCommand, opts?: any/* = {async: true}*/, shell = this.sshShell): Promise<any> {
+    exec(command: string = this.shCommand, opts?: any/* = {async: true}*/, shell = new Client()): Promise<any> {
         logger(`Executing Command: ${command}`);
-        if (this.sshShell) {
+        if (this.sshConfig) {
            return new Promise((rs: any, rj: any) => {
                let finalData: any[] = [];
                let errorData: string;
@@ -124,19 +135,19 @@ export class Commander extends BaseCommander {
                     shell.exec(command, (err: any, stream: any) => {
                         if (err) return rj(err);
                         stream.on('close', (code: number, signal: any) => {
-                            logger('Stream :: close :: code: ' + code + ', signal: ' + signal);
+                            logger('Remote:Stream :: close :: code: ' + code + ', signal: ' + signal);
                             shell.end();
                             if (errorData && !finalData.length)
                                 return rj({ code: code || signal, stdout: '', stderr: errorData })
                             else 
                                 return rs({ code: code || signal, stdout: finalData.join("\n"), stderr: '' })
                         }).on('data', (data: any) => {
-                            logger('STDOUT: ' + data);
+                            logger('Remote:STDOUT: ' + data);
                             finalData.push(data.toString());
                         })
                         .stderr.on('data', (data: any) => {
-                            logger('STDERR: ' + data);
-                            errorData = !data.includes("Building") && !data.includes("Creating") && !data.includes("Starting")
+                            logger('Remote:STDERR: ' + data);
+                            errorData = !data.includes("Building") && !data.includes("Creating") && !data.includes("Starting") && !data.includes("Stopping")
                             ? data.toString() : undefined;
                         });
                     });
