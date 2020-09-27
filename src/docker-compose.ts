@@ -624,6 +624,7 @@ interface ComposeScale {
     */
     t?: number;
     timeout?: number;
+    serviceArray?: string[];
 }
 
 interface ComposeStart {
@@ -978,10 +979,17 @@ export class DockerCompose extends Commander {
         const target = 'up';
         return this.runCompose(target, opts);
     }
+    /** Clears the all the services */
     clear() {
         this._services.clear();
         return this;
     }
+    /**
+     * @description converts the objects into a compose file
+     * @param path {string} local file path where it should be stored 
+     * @param remotePath {string} remote file path for services
+     * @returns {Promise<boolean>}
+     */
     async toFile(path: string = "docker-compose.yaml", remotePath: string = "docker-compose.yaml") {
         const version = this._version;
         const services: any = {  };
@@ -1009,20 +1017,41 @@ export class DockerCompose extends Commander {
             );
         });
     }
+    /**
+     * @description returns the compose file version
+     * @returns {Promise<number>}
+     */
     fileVersion(): Promise<string> {
         return Promise.resolve(this._composeFileVersion);
-    } 
+    }
+    /**
+     * @description Function runs the target command of docker compose with flags schema
+     * @param target {string} command e.g. build, up, down
+     * @param opts {any} options or flags for the object
+     */ 
     async runCompose(target: string, opts: any) {
         const { flags } = this.dict.get(target);
         return this.execActionCommand(target, opts, flags);
     }
     // Setter && Getters
+    /**
+     * @description set function based on the object parameter for a service
+     * @param service {string} service name
+     * @param opts {ISetOpts} all the set options for compose commands 
+     * @param noappend
+     * @returns {DockerCompose}
+     */
     set (service: string, opts: ISetOpts, noappend: string[] = []) {
        const funcs = Object.keys(opts);
        this.setCurrentService(service);
        funcs.forEach(fun => (this as any)[fun]((opts as any)[fun]));
        return this;
     }
+    /**
+     * @description returns the service configs
+     * @param service {string}
+     * @returns {Service} 
+     */
     get(service: string) {
         return this.getService(service);
     }
