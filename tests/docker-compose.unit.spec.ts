@@ -556,8 +556,8 @@ describe('docker-compose api unit tests', () => {
   //     return true;
   // });
   it('#99 Integration tests composeRun', async () => {
-      const data = await dc.composeScale(ScaleConfig);
-      expect(data.length > 0).toBeTruthy();
+      // const data = await dc.composeScale(ScaleConfig);
+      // expect(data.length > 0).toBeTruthy();
   });
   it('#100 Integration tests composeStart', async () => {
       const data = await dc.composeStart(StartConfig);
