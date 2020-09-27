@@ -161,7 +161,7 @@ export const START_FLAGS = {
     service: BASE_FLAGS.service,
 };
 export const STOP_FLAGS= {
-    service: BASE_FLAGS.service,
+    services: BASE_FLAGS.service,
     t: { flag: "-t", deli:" ", value: true },
     timeout: { flag: "--timeout", deli: " ",  value: true }
 };

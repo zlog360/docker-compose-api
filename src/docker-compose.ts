@@ -1556,15 +1556,18 @@ export class DockerCompose extends Commander {
             return e;
         }
     }
-    async Deploy(df: IDockerFile, stack: {[key: string]: ISetOpts}, path: { local: string, remote: string }) {
+    async Deploy(df: IDockerFile, stack: {[key: string]: ISetOpts|any}, path: { local: string, remote: string }) {
         try {
-            this.DockerFile.set(df).toFile();
+            if (df) {
+              this.DockerFile.set(df).toFile();
+            }
             const services = Object.keys(stack);
             services.forEach(s => this.set(s, stack[s]));
             this.toFile(path.local, path.remote);
             await this.cp(path.local, path.remote);
             return this.composeUp();
         } catch(e) {
+            console.log(e);
             return e;
         }
     }

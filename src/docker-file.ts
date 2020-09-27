@@ -33,7 +33,7 @@ export interface IOnBuild {
 }
 export interface IDockerFile {
     PATH?: string;
-    FROM: string|IFrom;
+    FROM?: string|IFrom;
     RUN?: string|string[];
     CMD?: string|string[];
     LABEL?: string|string[];
