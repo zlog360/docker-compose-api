@@ -128,7 +128,7 @@ class DockerFile {
 	}
 	pushOrderedValue(key: string, value: unknown) {
 		const refValue = this.keyCounter++;
-		this.order[refValue] = { key, value };
+		this.order[refValue] = { key, value: value.toString() };
 	}
 	setRun(r: IDockerFile['RUN']): DockerFile {
 		this.pushValue('RUN', r);
@@ -162,7 +162,9 @@ class DockerFile {
 		this.pushValue('WORKDIR', w);
 		return this;
 	}
-	getWorkdir() {}
+	getWorkdir() {
+		// Do nothing
+	}
 	setExpose(e: IDockerFile['EXPOSE']) {
 		this.pushValue('EXPOSE', e);
 		return this;
@@ -300,7 +302,7 @@ class DockerFile {
 		const data = cmds.map(
 			(c: string) => `${this.order[c].key} ${this.order[c].value}`
 		);
-		return new Promise((rs: unknown, rj: unknown) =>
+		return new Promise((rs, rj) =>
 			writeFile(this.fp, data.join('\n'), (e) => {
 				if (!e) {
 					this.order = {};

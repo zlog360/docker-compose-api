@@ -1,6 +1,6 @@
 // ts-mocha -p tsconfig.json tests/commander.spec.ts
 import expect from 'expect';
-import { Commander, ISSHConfigs } from '../src/my-lib';
+import { Commander, ISSHConfigs } from '../src';
 // import DockerFile, { IHealthCheck } from '../src/docker-file';
 import { LsLocal } from './data.service';
 import { existsSync, mkdirSync, rmdirSync } from 'fs';
@@ -19,7 +19,7 @@ describe('commander api unit tests', () => {
 	const localCmd = new Commander();
 	describe('Remote Ssh', () => {
 		it('#1 Construction', () => {
-			expect((remoteCmd as unknown).sshConfig).toBeTruthy();
+			expect(remoteCmd.sshConfig).toBeTruthy();
 		});
 		it('#2 set shCommand', () => {
 			remoteCmd.shCommand = 'ls .';
@@ -91,7 +91,7 @@ describe('commander api unit tests', () => {
 	});
 	describe('Local Shell', () => {
 		it('#1 Construction', () => {
-			expect(!(localCmd as unknown).sshConfig).toBeTruthy();
+			expect(!localCmd.sshConfig).toBeTruthy();
 		});
 		it('#2 set shCommand', () => {
 			localCmd.shCommand = 'ls .';

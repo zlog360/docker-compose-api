@@ -223,7 +223,7 @@ export const UP_FLAGS = {
 };
 export const VERSION_FLAGS = {};
 
-export const Dictionory = {
+export const Dictionary = {
 	actions: {
 		build: { flags: BUILD_FLAGS, key: 'build' },
 		config: { flags: BUILD_FLAGS, key: 'config' },
@@ -250,10 +250,10 @@ export const Dictionory = {
 		unpause: { flags: UNPAUSE_FLAGS, key: 'unpause' },
 		up: { flags: UP_FLAGS, key: 'up' },
 	},
-	list: () => Object.keys(Dictionory.actions),
+	list: () => Object.keys(Dictionary.actions),
 	add: (key: string, data: unknown) => {
-		(Dictionory.actions as unknown)[key] = data;
+		(Dictionary.actions as unknown)[key] = data;
 	},
-	get: (key: string) => (Dictionory.actions as unknown)[key],
-	remove: (key: string) => delete (Dictionory as unknown).actions[key],
+	get: (key: string) => Dictionary.actions[key],
+	remove: (key: string) => delete Dictionary.actions[key],
 };

@@ -1,27 +1,29 @@
 {
-  "compilerOptions": {
-    "esModuleInterop": true,
-    "noImplicitunknown": true,
-    "module": "commonjs",
-    "moduleResolution": "node",
-    "experimentalDecorators": true,
-    "pretty": true,
-    "types": [
-      "jest",
-      "node"
-    ],
-    "outDir": "build",
-
-    "declaration": true,
-    "sourceMap": true,
-    "target": "ES2016",
-    "lib": [
-      "es2019"
-    ],
-    "baseUrl": "./"
-  },
-  "include": ["src/**/*.ts", "tests/**/*.ts"],
-  "exclude": [
-    "node_modules"
-  ]
+	"compilerOptions": {
+		"esModuleInterop": true,
+		"noImplicitAny": false,
+		"module": "commonjs",
+		"moduleResolution": "node",
+		"experimentalDecorators": true,
+		"pretty": true,
+		"types": [
+			"jest",
+			"node"
+		],
+		"outDir": "build",
+		"declaration": true,
+		"sourceMap": true,
+		"target": "ES2016",
+		"lib": [
+			"es2019"
+		],
+		"baseUrl": "./"
+	},
+	"include": [
+		"src/**/*.ts",
+		"tests/**/*.ts"
+	],
+	"exclude": [
+		"node_modules"
+	]
 }

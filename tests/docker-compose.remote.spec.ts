@@ -1,6 +1,6 @@
 //DEBUG=zlog360:*,docker-compose:commander ts-mocha -p tsconfig.json tests/docker-compose.remote.spec.ts --timeout 100000 --trace-warnings
 import expect from 'expect';
-import { DockerCompose, ISetOpts } from '../src/my-lib';
+import { DockerCompose, ISetOpts } from '../src';
 import {
 	serviceBuild,
 	ConfigsShort,

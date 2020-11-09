@@ -1,8 +1,7 @@
 import { writeFile } from 'fs';
-import { getPackageVersion, Formatter } from './my-lib';
+import { getPackageVersion, Formatter } from '.';
 import { Commander, ISSHConfigs } from './commander';
 import { config } from 'process';
-import { isArray, isString } from 'util';
 import { setMatchers } from 'expect/build/jestMatchersObject';
 import {
 	ConcatSMUnitString,
@@ -17,12 +16,12 @@ import {
 	BUILD_FLAGS,
 	CONFIG_FLAGS,
 	CREATE_FLAGS,
-	Dictionory,
-} from './docker-dictionory';
+	Dictionary,
+} from './docker-dictionary';
 import { IDockerFile } from './docker-file';
-
-const YAML = require('json-to-pretty-yaml');
-const logger = require('debug')('zlog360:docker-compose');
+import debug from 'debug';
+import YAML from 'yaml';
+const logger = debug('zlog360:docker-compose');
 
 export type SMUnitString = string | string[];
 export type SMUnitConfig = IComposeGeneric | IConfig | IConfig[];
@@ -269,7 +268,8 @@ interface IDockerComposePack {
 	services: IServiceConfig[];
 }
 
-interface ServiceConfig {}
+export type ServiceConfig = Record<string, unknown>;
+
 interface ServiceKeyConfig {
 	key: string;
 	c: IServiceConfig;
@@ -649,7 +649,7 @@ interface ComposeTop {
 	service: string;
 }
 
-interface ComposeUnPause {}
+export type ComposeUnPause = Record<string, unknown>;
 
 interface ComposeUp {
 	/*
@@ -771,7 +771,7 @@ export class DockerCompose extends Commander {
 	public command = this.setCommand.bind(this);
 	private currentService: string;
 	public DockerFile: DockerFile;
-	private dict: unknown = Dictionory;
+	private dict = Dictionary;
 
 	constructor(
 		private config: IDockerComposeConfig,
@@ -998,27 +998,23 @@ export class DockerCompose extends Commander {
 		remotePath = 'docker-compose.yaml'
 	) {
 		const version = this._version;
-		const services: unknown = {};
+		const services: Record<string, unknown> = {};
 		const skeys = Array.from(this._services.keys());
 		const fun = (key: string) => (services[key] = this.getService(key));
 		skeys.forEach(fun);
 		const data = { version, services };
 		const filedata = YAML.stringify(data);
-		return new Promise((rs: unknown, rj: unknown) => {
-			writeFile(
-				`${path}/docker-compose.yaml`,
-				filedata,
-				async (e: unknown) => {
-					if (e) rj(e);
-					else rs(true);
-					// if (remotePath && this.sshConfig) {
-					//     await this.sftp.connect(this.sshConfig)
-					//     console.log(remotePath);
-					//     // this.sftp.fastPut(path, remotePath);
-					//     this.sftp.end();
-					// }
-				}
-			);
+		return new Promise((rs, rj) => {
+			writeFile(`${path}/docker-compose.yaml`, filedata, async (e) => {
+				if (e) rj(e);
+				else rs(true);
+				// if (remotePath && this.sshConfig) {
+				//     await this.sftp.connect(this.sshConfig)
+				//     console.log(remotePath);
+				//     // this.sftp.fastPut(path, remotePath);
+				//     this.sftp.end();
+				// }
+			});
 		});
 	}
 	/**
@@ -1035,7 +1031,11 @@ export class DockerCompose extends Commander {
 	 */
 	async runCompose(target: string, opts: unknown) {
 		const { flags } = this.dict.get(target);
-		return this.execActionCommand(target, opts, flags);
+		return this.execActionCommand(
+			target,
+			opts as Record<string, unknown>,
+			flags
+		);
 	}
 	// Setter && Getters
 	/**
@@ -1069,14 +1069,14 @@ export class DockerCompose extends Commander {
 	}
 
 	setService(config: SMUnitString | ServiceKeyConfig | ServiceKeyConfig[]) {
-		if (isString(config)) {
+		if (typeof config === 'string') {
 			this._services.set(config, {});
 		}
-		if (isArray(config)) {
-			config.forEach((itr: unknown) => this.setService(itr));
+		if (Array.isArray(config)) {
+			config.forEach((itr) => this.setService(itr));
 		}
-		if (!isString(config) && !isArray(config)) {
-			const { key, c } = config;
+		if (typeof config !== 'string' && !Array.isArray(config)) {
+			const { key, c } = config as ServiceKeyConfig;
 			this._services.set(key, c);
 		}
 		return this;
@@ -1097,10 +1097,10 @@ export class DockerCompose extends Commander {
 	}
 	getServiceConfigKey(service: string, prop: SMUnitString) {
 		const c = this.getService(service);
-		if (isString(prop)) {
+		if (typeof prop === 'string') {
 			return (c as unknown)[prop];
 		}
-		if (isArray(prop)) {
+		if (Array.isArray(prop)) {
 			return prop.map((k: string) => (c as unknown)[k]);
 		}
 		return c;
@@ -1119,7 +1119,7 @@ export class DockerCompose extends Commander {
 	setConfig(opts: ISetOpts['configs']) {
 		const { service = this.currentService, data } = opts;
 		let configs = this.getConfig(service);
-		if (isArray(configs)) {
+		if (Array.isArray(configs)) {
 			(configs as unknown[]).push(data);
 		} else configs = data;
 		this.setServiceWithConfig(service, { configs });
@@ -1321,10 +1321,12 @@ export class DockerCompose extends Commander {
 		const { service = this.currentService, append = true } = opts;
 		let { data } = opts;
 		let labels = this.getServiceConfigKey(service, 'labels');
-		data = isArray(data) ? StrArrtoObj(data as string[], labels) : data;
+		data = Array.isArray(data)
+			? StrArrtoObj(data as string[], labels)
+			: data;
 		if (typeof data !== typeof labels) {
 			labels = data;
-		} else if (!isArray(data) && !isString(data)) {
+		} else if (!Array.isArray(data) && typeof data !== 'string') {
 			labels = append ? { labels: { ...labels, ...data } } : data;
 		}
 		this.setServiceWithConfig(service, { labels });
@@ -1397,7 +1399,7 @@ export class DockerCompose extends Commander {
 	setSecret(opts: ISetOpts['secrets']) {
 		const { service = this.currentService, data, append = true } = opts;
 		let secrets = this.getServiceConfigKey(service, 'secrets');
-		if (!isArray(data) && !isString(data)) {
+		if (!Array.isArray(data) && typeof data !== 'string') {
 			secrets = ConcatObject(secrets, data, append);
 		} else {
 			secrets = ConcatSMUnitString(secrets, data, append);
@@ -1439,10 +1441,12 @@ export class DockerCompose extends Commander {
 		const { service = this.currentService, append = false } = opts;
 		let { data } = opts;
 		let sysctls = this.getServiceConfigKey(service, 'sysctls');
-		data = isArray(data) ? StrArrtoObj(data as string[], sysctls) : data;
+		data = Array.isArray(data)
+			? StrArrtoObj(data as string[], sysctls)
+			: data;
 		if (typeof sysctls !== typeof data) {
 			sysctls = data;
-		} else if (!isArray(sysctls) && !isString(sysctls)) {
+		} else if (!Array.isArray(sysctls) && typeof sysctls !== 'string') {
 			sysctls = append ? { sysctls: { ...sysctls, ...data } } : data;
 		}
 		this.setServiceWithConfig(service, { sysctls });
@@ -1455,7 +1459,7 @@ export class DockerCompose extends Commander {
 	setTempFs(opts: ISetOpts['tmpfs']) {
 		const { service = this.currentService, data, append = true } = opts;
 		let tmpfs = this.getServiceConfigKey(service, 'tmpfs');
-		if (!isArray(data) && !isString(data)) {
+		if (!Array.isArray(data) && typeof data !== 'string') {
 			tmpfs = ConcatObject(tmpfs, data, append);
 		} else {
 			tmpfs = ConcatSMUnitString(tmpfs, data, append);
@@ -1490,7 +1494,7 @@ export class DockerCompose extends Commander {
 	setVolume(opts: ISetOpts['volumes']) {
 		const { service = this.currentService, data, append = true } = opts;
 		let volumes = this.getServiceConfigKey(service, 'volumes');
-		if (!isArray(data) && !isString(data)) {
+		if (!Array.isArray(data) && typeof data !== 'string') {
 			volumes = ConcatObject(volumes, data, append);
 		} else {
 			volumes = ConcatSMUnitString(volumes, data, append);
@@ -1510,7 +1514,11 @@ export class DockerCompose extends Commander {
 		return this.getServiceConfigKey(service, 'command');
 	}
 	// other methods
-	parseCommand(flags: unknown, data: unknown, strcommand = '') {
+	parseCommand(
+		flags: unknown,
+		data: Record<string, unknown>,
+		strcommand = ''
+	) {
 		const keys = Object.keys(flags);
 		let cmd = keys
 			.map((key: string) => {
@@ -1544,7 +1552,11 @@ export class DockerCompose extends Commander {
 		this.changePath();
 		this.shCommand = `${this.shCommand} docker-compose ${action}`;
 	}
-	execActionCommand(action: string, opts?: unknown, flags?: unknown) {
+	execActionCommand(
+		action: string,
+		opts?: Record<string, unknown>,
+		flags?: unknown
+	) {
 		this.clearCmd();
 		this.baseCommand(action);
 

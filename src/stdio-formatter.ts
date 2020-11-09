@@ -11,16 +11,18 @@ const regex_map: unknown = {
 };
 
 export class Formatter {
-	static json(data: unknown): unknown {
-		const temp: unknown = {};
+	static json(data: unknown): Record<string, unknown> {
+		const temp: Record<string, unknown> = {};
 		const rmap = Object.keys(regex_map);
 		rmap.forEach((key: string) => {
 			const regex = regex_map[key];
-			data.split('\n').map((itr: unknown) => {
-				const nkey = itr.match(key);
-				const match = itr.match(regex);
-				if (nkey && match) temp[nkey] = match[0];
-			});
+			data.toString()
+				.split('\n')
+				.map((itr) => {
+					const nkey = itr.match(key);
+					const match = itr.match(regex);
+					if (nkey && match) temp[nkey.toString()] = match[0];
+				});
 		});
 		return temp;
 		// const tempArr = lines.map((itr: unknown) => {

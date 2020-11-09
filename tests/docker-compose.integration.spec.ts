@@ -1,6 +1,6 @@
 // DEBUG=zlog360:* ts-mocha -p tsconfig.json tests/docker-compose.integration.spec.ts --timeout 100000
 import expect from 'expect';
-import { DockerCompose, ISetOpts } from '../src/my-lib';
+import { DockerCompose, ISetOpts } from '../src';
 import {
 	Services_List,
 	serviceBuild,
