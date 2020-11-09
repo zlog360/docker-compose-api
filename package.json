@@ -3,6 +3,10 @@
   "version": "0.0.8",
   "description": " Programatic Api for Nodejs developers to use docker-compose .",
   "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "https://github.com/zlog360/docker-compose-api"
