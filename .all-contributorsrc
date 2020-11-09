@@ -1,0 +1,24 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "zlog360",
+      "name": "zlog360",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/71428679?v=4",
+      "profile": "https://github.com/zlog360",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "docker-compose-api",
+  "projectOwner": "creepinson",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}
