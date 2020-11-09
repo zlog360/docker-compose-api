@@ -15,6 +15,7 @@
 		"noImplicitAny": false,
 		"noImplicitReturns": true,
 		"noImplicitUseStrict": false,
+		"skipLibCheck": true,
 		"noFallthroughCasesInSwitch": true,
 		"allowJs": true,
 		"allowSyntheticDefaultImports": true

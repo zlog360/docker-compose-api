@@ -12,6 +12,7 @@
 		],
 		"outDir": "build",
 		"declaration": true,
+		"skipLibCheck": true,
 		"sourceMap": true,
 		"target": "ES2016",
 		"lib": [

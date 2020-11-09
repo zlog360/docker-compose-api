@@ -13,8 +13,8 @@
 	},
 	"scripts": {
 		"build": "rimraf dist && tsc -p ./tsconfig.src.json",
-		"prepublishOnly": "npm run lint && snpm run build && npm run test",
-		"lint": "eslint **/*.ts",
+		"prepublishOnly": "npm run lint && npm run build && npm run test",
+		"lint": "eslint --quiet --fix {src,tests}/**/*.ts",
 		"test": "ts-mocha -p tsconfig.json tests/*.ts",
 		"tsc": "tsc"
 	},
