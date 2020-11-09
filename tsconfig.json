@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "esModuleInterop": true,
-    "noImplicitAny": true,
+    "noImplicitunknown": true,
     "module": "commonjs",
     "moduleResolution": "node",
     "experimentalDecorators": true,

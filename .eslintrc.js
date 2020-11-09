@@ -1,8 +1,8 @@
 module.exports = {
-	parser: "@typescript-eslint/parser",
+	parser: '@typescript-eslint/parser',
 	parserOptions: {
 		ecmaVersion: 2020,
-		sourceType: "module",
+		sourceType: 'module',
 		ecmaFeatures: {
 			jsx: true,
 		},
@@ -13,10 +13,10 @@ module.exports = {
 		es6: true,
 	},
 	extends: [
-		"plugin:@typescript-eslint/recommended",
-		"plugin:prettier/recommended",
+		'plugin:@typescript-eslint/recommended',
+		'plugin:prettier/recommended',
 	],
 	rules: {
-		"@typescript-eslint/explicit-module-boundary-types": "off",
+		'@typescript-eslint/explicit-module-boundary-types': 'off',
 	},
 };

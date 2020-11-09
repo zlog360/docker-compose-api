@@ -19,7 +19,7 @@ describe('commander api unit tests', () => {
 	const localCmd = new Commander();
 	describe('Remote Ssh', () => {
 		it('#1 Construction', () => {
-			expect((remoteCmd as any).sshConfig).toBeTruthy();
+			expect((remoteCmd as unknown).sshConfig).toBeTruthy();
 		});
 		it('#2 set shCommand', () => {
 			remoteCmd.shCommand = 'ls .';
@@ -91,7 +91,7 @@ describe('commander api unit tests', () => {
 	});
 	describe('Local Shell', () => {
 		it('#1 Construction', () => {
-			expect(!(localCmd as any).sshConfig).toBeTruthy();
+			expect(!(localCmd as unknown).sshConfig).toBeTruthy();
 		});
 		it('#2 set shCommand', () => {
 			localCmd.shCommand = 'ls .';
