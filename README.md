@@ -16,7 +16,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 <!-- markdownlint-disable -->
 <table>
   <tr>
-    <td align="center"><a href="https://github.com/zlog360"><img src="https://avatars1.githubusercontent.com/u/71428679?v=4" width="100px;" alt=""/><br /><sub><b>zlog360</b></sub></a><br /><a href="https://github.com/creepinson/docker-compose-api/commits?author=zlog360" title="Code">💻</a></td>
+    <td align="center"><a href="https://github.com/zeeshanalisyed"><img src="https://avatars3.githubusercontent.com/u/8758274?v=4" width="100px;" alt=""/><br /><sub><b>zlog360</b></sub></a><br /><a href="https://github.com/creepinson/docker-compose-api/commits?author=zeeshanalisyed" title="Code">💻</a></td>
     <td align="center"><a href="https://theoparis.com/about"><img src="https://avatars0.githubusercontent.com/u/11761863?v=4" width="100px;" alt=""/><br /><sub><b>Theo Paris</b></sub></a><br /><a href="https://github.com/creepinson/docker-compose-api/commits?author=creepinson" title="Documentation">📖</a></td>
   </tr>
 </table>
