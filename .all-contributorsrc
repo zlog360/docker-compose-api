@@ -1,0 +1,33 @@
+{
+  "files": [
+    "README.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "contributors": [
+    {
+      "login": "zeeshanalisyed",
+      "name": "zeeshanalisyed",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/8758274?v=4",
+      "profile": "https://github.com/zeeshanalisyed",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "creepinson",
+      "name": "Theo Paris",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/11761863?v=4",
+      "profile": "https://theoparis.com/about",
+      "contributions": [
+        "doc"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7,
+  "projectName": "docker-compose-api",
+  "projectOwner": "creepinson",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "skipCi": true
+}

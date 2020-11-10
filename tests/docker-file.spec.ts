@@ -2,7 +2,10 @@
 import expect from 'expect';
 import DockerFile from '../src/docker-file';
 // ts-mocha -p tsconfig.json tests/docker-file.spec.ts
-const base = { fp: 'tests/docker/test.dockerfile/Dockerfile', df: { FROM: 'ubuntu' } };
+const base = {
+	fp: 'tests/docker/test.dockerfile/Dockerfile',
+	df: { FROM: 'ubuntu' },
+};
 const cp = '/tests/docker';
 // const run = 'echo \'we are running some # of cool things\'';
 const formObj = { platform: 'linux', image: 'redis', version: '1.0.0' };
@@ -40,64 +43,64 @@ const CPYArr = ['. /code/', 'syslog syslog.1'];
 
 // const user = 'patrick';
 
-// const volStr = '/myvol'; 
+// const volStr = '/myvol';
 
 const onbuilddata = {
-  ADD:  '. /app/src',
-  RUN: '/usr/local/bin/python-build --dir /app/src',
-  CMD: ['ls -l', 'mv syslog syslog.10']
+	ADD: '. /app/src',
+	RUN: '/usr/local/bin/python-build --dir /app/src',
+	CMD: ['ls -l', 'mv syslog syslog.10'],
 };
 
 const cmd = ['mv a b', 'ls -l .', 'cp -r a b', 'chmod 777 .'];
 
 describe('docker-file api unit tests', () => {
-  const dc = new DockerFile();
-  it('#1 Construction', () => {
-     expect(dc).toMatchObject(base);
-  });
-  it('#2 setPath', () => {
-    dc.setPath(cp);
-    expect(dc.getPath()).toBe(cp);
-    dc.setPath(base.fp);
-    expect(dc.getPath()).toBe(base.fp);
-  });
-  it('#3 setFrom', () => {
-    dc.setFrom(formObj);
-    expect(dc.getFrom()).toMatchObject([formObjStr, formObjStr]);
-    dc.setFrom(formStr);
-    expect(dc.getFrom()).toMatchObject(['redis:1.0.0', 'redis:1.0.0']);
-  });
-  it('#4 setRun', () => {
-    dc.setRun(RUNstr).setRun(RUNArray);
-    expect(dc.getRun()).toMatchObject([RUNstr, ...RUNArray]);
-  });
+	const dc = new DockerFile();
+	it('#1 Construction', () => {
+		expect(dc).toMatchObject(base);
+	});
+	it('#2 setPath', () => {
+		dc.setPath(cp);
+		expect(dc.getPath()).toBe(cp);
+		dc.setPath(base.fp);
+		expect(dc.getPath()).toBe(base.fp);
+	});
+	it('#3 setFrom', () => {
+		dc.setFrom(formObj);
+		expect(dc.getFrom()).toMatchObject([formObjStr, formObjStr]);
+		dc.setFrom(formStr);
+		expect(dc.getFrom()).toMatchObject(['redis:1.0.0', 'redis:1.0.0']);
+	});
+	it('#4 setRun', () => {
+		dc.setRun(RUNstr).setRun(RUNArray);
+		expect(dc.getRun()).toMatchObject([RUNstr, ...RUNArray]);
+	});
 
-  it('#5 setCpy', () => {
-    dc.setCpy(CPYStr).setCpy(CPYArr);
-    expect(dc.getCpy()).toMatchObject([CPYStr, ...CPYArr]);
-  });
+	it('#5 setCpy', () => {
+		dc.setCpy(CPYStr).setCpy(CPYArr);
+		expect(dc.getCpy()).toMatchObject([CPYStr, ...CPYArr]);
+	});
 
-  it('#6 setCpy', () => {
-    dc.setCpy(CPYStr).setCpy(CPYArr);
-    // expect(dc.getCpy()).toMatchObject([CPYStr, ...CPYArr]);
-  });
+	it('#6 setCpy', () => {
+		dc.setCpy(CPYStr).setCpy(CPYArr);
+		// expect(dc.getCpy()).toMatchObject([CPYStr, ...CPYArr]);
+	});
 
-  it('#7 setOnBuild', () => {
-    dc.setOnBuild(onbuilddata);
-    expect(dc.getOnBuild()).toMatchObject([
-      'ADD . /app/src',
-      'RUN /usr/local/bin/python-build --dir /app/src',
-      'CMD ls -l\nCMD mv syslog syslog.10'
-    ]);
-  });
+	it('#7 setOnBuild', () => {
+		dc.setOnBuild(onbuilddata);
+		expect(dc.getOnBuild()).toMatchObject([
+			'ADD . /app/src',
+			'RUN /usr/local/bin/python-build --dir /app/src',
+			'CMD ls -l\nCMD mv syslog syslog.10',
+		]);
+	});
 
-  it('#8 setCmd', () => {
-    dc.setCmd(cmd);
-    expect(dc.getCmd()).toBe((cmd as string[]).join(' && '));
-  });
+	it('#8 setCmd', () => {
+		dc.setCmd(cmd);
+		expect(dc.getCmd()).toBe((cmd as string[]).join(' && '));
+	});
 
-  it('#i toFile', async () => {
-    const rslts = await dc.toFile();
-    expect(rslts).toBeTruthy();
-  });
+	it('#i toFile', async () => {
+		const rslts = await dc.toFile();
+		expect(rslts).toBeTruthy();
+	});
 });

@@ -1,0 +1,14 @@
+version: "3.3"
+services:
+  nodejs_docker_web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        buildno: 1
+    depends_on:
+      - traefik
+    ports:
+      - 3002:3002
+  traefik:
+    image: traefik
